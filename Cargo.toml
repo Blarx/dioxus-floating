@@ -12,4 +12,4 @@ readme = "README.md"
 
 [dependencies]
 dioxus = { version = "0.7" }
-gloo-timers = { version = "0.3" }
+gloo-timers = { version = "0.3", features = ["future"] }
