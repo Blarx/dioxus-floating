@@ -79,28 +79,34 @@ pub struct FloatingResult {
 /// # Example
 ///
 /// ```rust
-/// let element_ref = use_signal(|| None);
-/// let trigger_ref = use_signal(|| None);
-/// let is_opened = use_signal(|| false);
+/// use dioxus::prelude::*;
+/// use dioxus::html::geometry::PixelsVector2D;
+/// use dioxus_floating::{use_placement, FloatingOptions};
 ///
-/// let placement = use_placement(element_ref, trigger_ref, FloatingOptions::default());
+/// fn MyElement() -> Element {
+///     let mut element_ref = use_signal(|| None);
+///     let mut trigger_ref = use_signal(|| None);
+///     let mut is_opened = use_signal(|| false);
 ///
-/// rsx! {
-///     // The trigger element
-///     button {
-///         onmounted: move |e| trigger_ref.set(Some(e.data.clone())),
-///         onclick: move |_| is_opened.toggle(),
-///         "Toggle Dropdown"
-///     }
+///     let placement = use_placement(element_ref, trigger_ref, FloatingOptions::default());
+///
+///     rsx! {
+///         // The trigger element
+///         button {
+///             onmounted: move |e| trigger_ref.set(Some(e.data.clone())),
+///             onclick: move |_| is_opened.toggle(),
+///             "Toggle Dropdown"
+///         }
 ///     
-///     // The floating element
-///     if is_opened() {
-///         div {
-///             onmounted: move |e| element_ref.set(Some(e.data.clone())),
-///             // Use is_ready to prevent the element from "jumping" into position
-///             class: if placement().is_ready { "opacity-100" } else { "opacity-0" },
-///             style: "position: fixed; transform: translate3d({placement().x}px, {placement().y}px, 0);",
-///             "I am a dropdown content"
+///         // The floating element
+///         if is_opened() {
+///             div {
+///                 onmounted: move |e| element_ref.set(Some(e.data.clone())),
+///                 // Use is_ready to prevent the element from "jumping" into position
+///                 class: if placement().is_ready { "opacity-100" } else { "opacity-0" },
+///                 style: "position: fixed; transform: translate3d({placement().x}px, {placement().y}px, 0);",
+///                 "I am a dropdown content"
+///             }
 ///         }
 ///     }
 /// }
@@ -109,14 +115,23 @@ pub struct FloatingResult {
 /// # Example: Custom Style Generation
 ///
 /// ```rust
-/// let pos = use_placement(el, tr, opt);
+/// use dioxus::prelude::*;
+/// use dioxus_floating::{use_placement, FloatingOptions};
 ///
-/// let style = use_memo(move || {
-///     pos.with(|p| format!(
-///         "position: fixed; transform: translate3d({}px, {}px, 0); opacity: {};",
-///         p.x, p.y, if p.is_ready { 1 } else { 0 }
-///     ))
-/// });
+/// #[component]
+/// fn MyComponent() -> Element {
+///     let el = use_signal(|| None);
+///     let tr = use_signal(|| None);
+///     let pos = use_placement(el, tr, FloatingOptions::default());
+///
+///     let style = use_memo(move || {
+///         pos.with(|p| format!(
+///             "position: fixed; transform: translate3d({}px, {}px, 0); opacity: {};",
+///             p.x, p.y, if p.is_ready { 1 } else { 0 }
+///         ))
+///     });
+///     rsx!{}
+/// }
 /// ```
 pub fn use_placement(
     // Signal containing the reference to the floating element.
@@ -195,28 +210,34 @@ pub fn use_placement(
 /// # Example
 ///
 /// ```rust
-/// let click_point = use_signal(|| None);
-/// let element_ref = use_signal(|| None);
+/// use dioxus::prelude::*;
+/// use dioxus_floating::{use_placement_on_point, FloatingOptions};
 ///
-/// let placement = use_placement_on_point(element_ref, click_point, options);
+/// #[component]
+/// fn MyComponent() -> Element {
+///     let mut click_point = use_signal(|| None);
+///     let mut element_ref = use_signal(|| None);
 ///
-/// rsx! {
-///     div {
-///         oncontextmenu: move |e| {
-///             e.prevent_default();
-///             click_point.set(Some(e.client_coordinates()));
-///         },
-///         "Right click here to open menu"
-///     }
-///     
-///     // Render the element as soon as we have a target point
-///     if click_point().is_some() {
+///     let placement = use_placement_on_point(element_ref, click_point, FloatingOptions::default());
+///
+///     rsx! {
 ///         div {
-///             onmounted: move |e| element_ref.set(Some(e.data.clone())),
-///             // Keep it invisible until positioning is calculated
-///             class: if placement().is_ready { "opacity-100" } else { "opacity-0" },
-///             style: "position: fixed; transform: translate3d({placement().x}px, {placement().y}px, 0);",
-///             "Context Menu Content"
+///             oncontextmenu: move |e| {
+///                 e.prevent_default();
+///                 click_point.set(Some(e.client_coordinates()));
+///             },
+///             "Right click here to open menu"
+///         }
+///     
+///         // Render the element as soon as we have a target point
+///         if click_point().is_some() {
+///             div {
+///                 onmounted: move |e| element_ref.set(Some(e.data.clone())),
+///                 // Keep it invisible until positioning is calculated
+///                 class: if placement().is_ready { "opacity-100" } else { "opacity-0" },
+///                 style: "position: fixed; transform: translate3d({placement().x}px, {placement().y}px, 0);",
+///                 "Context Menu Content"
+///             }
 ///         }
 ///     }
 /// }
@@ -225,14 +246,26 @@ pub fn use_placement(
 /// # Example: Custom Style Generation
 ///
 /// ```rust
-/// let pos = use_placement(el, tr, opt);
+/// use dioxus::prelude::*;
+/// use dioxus_floating::{use_placement_on_point, FloatingOptions};
 ///
-/// let style = use_memo(move || {
-///     pos.with(|p| format!(
-///         "position: fixed; transform: translate3d({}px, {}px, 0); opacity: {};",
-///         p.x, p.y, if p.is_ready { 1 } else { 0 }
-///     ))
-/// });
+/// #[component]
+/// fn MyComponent() -> Element {
+///     let el = use_signal(|| None);
+///     let mut click = use_signal(|| None);
+///     let pos = use_placement_on_point(el, click, FloatingOptions::default());
+///     let style = use_memo(move || {
+///         pos.with(|p| format!(
+///             "position: fixed; transform: translate3d({}px, {}px, 0); opacity: {};",
+///             p.x, p.y, if p.is_ready { 1 } else { 0 }
+///         ))
+///     });
+///     rsx! {
+///         button {
+///             onclick: move |evt: MouseEvent| { click.set(Some(evt.client_coordinates())) }
+///         }
+///     }
+/// }
 /// ```
 pub fn use_placement_on_point(
     element_ref: Signal<Option<Rc<MountedData>>>,

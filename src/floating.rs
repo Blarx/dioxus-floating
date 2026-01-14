@@ -181,10 +181,22 @@ impl Floating {
     ///
     /// # Example
     /// ```rust
-    /// onscroll: move |evt| {
-    ///     let new_state = floating.generate_scroll_state(evt);
-    ///     scroll_state.set(Some(new_state));
-    /// }
+    /// # use dioxus::prelude::*;
+    /// # use dioxus_floating::use_floating;
+    ///
+    /// # #[component]
+    /// # fn MyComponent() -> Element {
+    ///     let floating = use_floating();
+    ///     let mut scroll_state = use_signal(|| None);
+    /// #    rsx! {
+    ///         div {
+    ///             onscroll: move |evt: ScrollEvent| {
+    ///                 let new_state = floating.generate_scroll_state(evt);
+    ///                  scroll_state.set(Some(new_state));
+    ///             }
+    ///         }
+    /// #    }
+    /// # }
     /// ```
     pub fn generate_scroll_state(&self, evt: ScrollEvent) -> ScrollState {
         ScrollState {

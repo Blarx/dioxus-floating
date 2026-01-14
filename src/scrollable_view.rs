@@ -16,18 +16,27 @@ use crate::ScrollState;
 ///
 /// # Example
 ///
-/// ```rust
-/// rsx! {
-///     ScrollableView {
-///         class: "h-screen w-full overflow-y-auto",
-///         on_scroll: move |state| println!("Scrolled to: {}", state.state.top),
+/// ```rust,norun
+/// use dioxus::prelude::*;
+/// use dioxus_floating::{use_scroll_context, ScrollableView, ScrollState};
+///
+/// #[component]
+/// fn MyComponent() -> Element {
+///     rsx! {
+///         ScrollableView {
+///             class: "h-screen w-full overflow-y-auto",
+///             on_scroll: move |state: ScrollState| println!("Scrolled to: {}", state.state.y),
 ///         
-///         div { class: "h-[2000px]", "Very long content..." }
+///             div { class: "h-[2000px]", "Very long content..." }
 ///         
-///         // Any floating elements inside will be positioned correctly
-///         MyDropdown {}
+///             // Any floating elements inside will be positioned correctly
+///             MyDropdown {}
+///         }
 ///     }
 /// }
+///
+/// #[component]
+/// fn MyDropdown() -> Element { let ctx = use_scroll_context(); rsx! {} }
 /// ```
 #[component]
 pub fn ScrollableView(
@@ -124,10 +133,20 @@ impl ScrollableContext {
     ///
     /// # Example
     /// ```rust
-    /// let ctx = use_scroll_context();
-    /// spawn(async move {
-    ///     ctx.scroll(PixelsVector2D::new(0.0, 100.0), ScrollBehavior::Smooth).await;
-    /// });
+    /// use dioxus::prelude::*;
+    /// use dioxus::html::geometry::PixelsVector2D;
+    /// use dioxus_floating::use_scroll_context;
+    ///
+    /// #[component]
+    /// fn MyComponent() -> Element {
+    ///     let ctx = use_scroll_context();
+    ///     use_effect(move || {
+    ///         spawn(async move {
+    ///             ctx.scroll(PixelsVector2D::new(0.0, 100.0), ScrollBehavior::Smooth).await;
+    ///         });
+    ///     });
+    ///     rsx! {}
+    /// }
     /// ```
     pub async fn scroll(&self, coordinates: PixelsVector2D, behavior: ScrollBehavior) {
         if let Some(data) = self.scrollable_ref.peek().as_ref() {
