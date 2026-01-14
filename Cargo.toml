@@ -11,5 +11,5 @@ categories = ["gui", "web-programming"]
 readme = "README.md"
 
 [dependencies]
-dioxus = { workspace = true }
-gloo-timers = { workspace = true }
+dioxus = { version = "0.7" }
+gloo-timers = { version = "0.3" }
