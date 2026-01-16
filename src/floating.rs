@@ -24,7 +24,7 @@ pub struct ScrollState {
 }
 
 /// Defines the preferred side and alignment of the floating element relative to its trigger.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Placement {
     TopStart,
     TopCenter,
