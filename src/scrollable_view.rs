@@ -43,8 +43,12 @@ pub fn ScrollableView(
     #[props(default)] id: Option<String>,
     #[props(default)] class: String,
     #[props(default)] style: String,
-    children: Element,
+    #[props(into)] on_mouse_move: Option<EventHandler<MouseEvent>>,
+    #[props(into)] on_mouse_up: Option<EventHandler<MouseEvent>>,
+    #[props(into)] on_mouse_down: Option<EventHandler<MouseEvent>>,
     #[props(into)] on_scroll: Option<EventHandler<ScrollState>>,
+    children: Element,
+    #[props(extends = GlobalAttributes)] attributes: Vec<Attribute>,
 ) -> Element {
     let floating = crate::use_floating();
 
@@ -94,6 +98,16 @@ pub fn ScrollableView(
                 scroll_state.set(Some(new_state));
                 if let Some(cb) = on_scroll { cb.call(new_state); }
             },
+            onmousemove: move |evt: MouseEvent| {
+                if let Some(cb) = on_mouse_move { cb.call(evt); }
+            },
+            onmouseup: move |evt: MouseEvent| {
+                if let Some(cb) = on_mouse_up { cb.call(evt); }
+            },
+            onmousedown: move |evt: MouseEvent| {
+                if let Some(cb) = on_mouse_down { cb.call(evt); }
+            },
+            ..attributes,
 
             {children}
         }
