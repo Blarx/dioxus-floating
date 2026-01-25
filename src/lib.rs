@@ -122,7 +122,7 @@ pub struct FloatingResult {
 /// fn MyComponent() -> Element {
 ///     let el = use_signal(|| None);
 ///     let tr = use_signal(|| None);
-///     let pos = use_placement(el, tr, FloatingOptions::default());
+///     let pos = use_placement(el.into(), tr.into(), FloatingOptions::default());
 ///
 ///     let style = use_memo(move || {
 ///         pos.with(|p| format!(
@@ -133,14 +133,21 @@ pub struct FloatingResult {
 ///     rsx!{}
 /// }
 /// ```
-pub fn use_placement(
+pub fn use_placement<E, T>(
     // Signal containing the reference to the floating element.
-    element_ref: Signal<Option<Rc<MountedData>>>,
+    element_ref: E,
     // Signal containing the reference to the trigger (anchor) element.
-    trigger_ref: Signal<Option<Rc<MountedData>>>,
+    trigger_ref: T,
     // Positioning options including [Placement], [Middleware], and offsets.
     options: FloatingOptions,
-) -> Signal<FloatingResult> {
+) -> ReadSignal<FloatingResult>
+where
+    E: Into<ReadSignal<Option<Rc<MountedData>>>>,
+    T: Into<ReadSignal<Option<Rc<MountedData>>>>,
+{
+    let element_ref = element_ref.into();
+    let trigger_ref = trigger_ref.into();
+
     let floating = use_floating();
     let mut result = use_signal(FloatingResult::default);
 
@@ -152,7 +159,7 @@ pub fn use_placement(
                 "use_placement hook used outside of ScrollableView. \
                 Ensure your component is wrapped in a ScrollableView or provide a ScrollableContext."
             );
-            return result;
+            return result.into();
         }
     };
 
@@ -193,7 +200,7 @@ pub fn use_placement(
         }
     });
 
-    result
+    result.into()
 }
 
 /// Reactive hook for positioning a floating element relative to a specific point (e.g., mouse click).
@@ -218,7 +225,11 @@ pub fn use_placement(
 ///     let mut click_point = use_signal(|| None);
 ///     let mut element_ref = use_signal(|| None);
 ///
-///     let placement = use_placement_on_point(element_ref, click_point, FloatingOptions::default());
+///     let placement = use_placement_on_point(
+///         element_ref.into(),
+///         click_point.into(),
+///         FloatingOptions::default(),
+///     );
 ///
 ///     rsx! {
 ///         div {
@@ -267,11 +278,17 @@ pub fn use_placement(
 ///     }
 /// }
 /// ```
-pub fn use_placement_on_point(
-    element_ref: Signal<Option<Rc<MountedData>>>,
-    trigger_point: Signal<Option<ClientPoint>>,
+pub fn use_placement_on_point<E, T>(
+    element_ref: E,
+    trigger_point: T,
     options: FloatingOptions,
-) -> Signal<FloatingResult> {
+) -> ReadSignal<FloatingResult>
+where
+    E: Into<ReadSignal<Option<Rc<MountedData>>>>,
+    T: Into<ReadSignal<Option<ClientPoint>>>,
+{
+    let element_ref = element_ref.into();
+    let trigger_point = trigger_point.into();
     let floating = use_floating();
     let mut result = use_signal(FloatingResult::default);
     // context without panic
@@ -282,7 +299,7 @@ pub fn use_placement_on_point(
                 "use_placement hook used outside of ScrollableView. \
                 Ensure your component is wrapped in a ScrollableView or provide a ScrollableContext."
             );
-            return result;
+            return result.into();
         }
     };
 
@@ -323,5 +340,5 @@ pub fn use_placement_on_point(
         }
     });
 
-    result
+    result.into()
 }
