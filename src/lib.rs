@@ -122,7 +122,7 @@ pub struct FloatingResult {
 /// fn MyComponent() -> Element {
 ///     let el = use_signal(|| None);
 ///     let tr = use_signal(|| None);
-///     let pos = use_placement(el.into(), tr.into(), FloatingOptions::default());
+///     let pos = use_placement(el, tr, FloatingOptions::default());
 ///
 ///     let style = use_memo(move || {
 ///         pos.with(|p| format!(
@@ -226,8 +226,8 @@ where
 ///     let mut element_ref = use_signal(|| None);
 ///
 ///     let placement = use_placement_on_point(
-///         element_ref.into(),
-///         click_point.into(),
+///         element_ref,
+///         click_point,
 ///         FloatingOptions::default(),
 ///     );
 ///
