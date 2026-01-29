@@ -1,6 +1,6 @@
 [package]
 name = "dioxus-floating"
-version = "0.1.2"
+version = "0.2.0"
 edition = "2024"
 authors = ["Alexandr <flatbusy@gmail.com>"]
 description = "A floating positioning engine for Dioxus 0.7. Handles flips, shifts, and scrollable containers with ease."
