@@ -6,7 +6,7 @@ use dioxus::{html::geometry::ClientPoint, logger::tracing};
 mod floating;
 mod scrollable_view;
 
-pub use floating::{Floating, FloatingOptions, Middleware, Placement, ScrollState};
+pub use floating::{Floating, FloatingOptions, Middleware, OffsetOptions, Placement, ScrollState};
 pub use scrollable_view::{ScrollableContext, ScrollableView};
 
 /// Returns the global [Floating] engine instance.

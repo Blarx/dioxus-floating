@@ -105,13 +105,54 @@ pub enum Middleware {
     Shift,
 }
 
+/// Offset options for the floating element.
+#[derive(Debug, Clone, PartialEq)]
+pub struct OffsetOptions {
+    /// Offset along the main axis. (Vertical, X)
+    pub main_axis: f64,
+    /// Offset along the cross axis. (Horizontal, Y)
+    pub cross_axis: f64,
+}
+
+impl Default for OffsetOptions {
+    fn default() -> Self {
+        Self {
+            main_axis: 1_f64,
+            cross_axis: 1_f64,
+        }
+    }
+}
+
+impl OffsetOptions {
+    /// Creates a new [OffsetOptions] with the specified offsets.
+    pub fn new(main_axis: f64, cross_axis: f64) -> Self {
+        Self {
+            main_axis,
+            cross_axis,
+        }
+    }
+
+    /// Creates a new [OffsetOptions] with the same offset for both axes.
+    pub fn rect(offset: f64) -> Self {
+        Self {
+            main_axis: offset,
+            cross_axis: offset,
+        }
+    }
+
+    /// Creates a new [OffsetOptions] with zero offset for both axes.
+    pub fn zero() -> Self {
+        Self::rect(0_f64)
+    }
+}
+
 /// Configuration for the floating position calculation.
 #[derive(Debug, Clone)]
 pub struct FloatingOptions {
     /// List of [Middleware] strategies to apply.
     pub middleware: Vec<Middleware>,
     /// Distance between the trigger and the floating element in pixels.
-    pub offset: f64,
+    pub offset: OffsetOptions,
     /// Distance between the floating element and the scrollable container edges.
     pub padding: f64,
     /// The preferred [Placement] strategy.
@@ -136,7 +177,7 @@ impl Default for FloatingOptions {
     fn default() -> Self {
         FloatingOptions {
             middleware: vec![Middleware::Flip, Middleware::Shift],
-            offset: 1_f64,
+            offset: OffsetOptions::default(),
             padding: 0_f64,
             placement: Placement::BottomStart,
         }
@@ -300,16 +341,16 @@ impl Floating {
                 PlacementModifier::End => trigger.max_x() - element.width(),
             };
             let y = if options.placement.is_top() {
-                trigger.min_y() - element.height() - options.offset
+                trigger.min_y() - element.height() - options.offset.cross_axis
             } else {
-                trigger.max_y() + options.offset
+                trigger.max_y() + options.offset.cross_axis
             };
-            (x, y)
+            (x + options.offset.main_axis, y)
         } else {
             let x = if options.placement.is_left() {
-                trigger.min_x() - element.width() - options.offset
+                trigger.min_x() - element.width() - options.offset.main_axis
             } else {
-                trigger.max_x() + options.offset
+                trigger.max_x() + options.offset.main_axis
             };
             let y = match options.placement.get_modifier() {
                 PlacementModifier::Center => {
@@ -318,7 +359,7 @@ impl Floating {
                 PlacementModifier::Start => trigger.min_y(),
                 PlacementModifier::End => trigger.max_y() - element.height(),
             };
-            (x, y)
+            (x, y + options.offset.cross_axis)
         };
 
         (x, y)
@@ -340,15 +381,15 @@ impl Floating {
         if options.can_flip() {
             if options.placement.is_vertical() {
                 if options.placement.is_top() && y < scrollable.min_y() {
-                    y = trigger.max_y() + options.offset;
+                    y = trigger.max_y() + options.offset.cross_axis;
                 } else if !options.placement.is_top() && y + element.height() > scrollable.max_y() {
-                    y = trigger.min_y() - element.height() - options.offset;
+                    y = trigger.min_y() - element.height() - options.offset.cross_axis;
                 }
             } else {
                 if options.placement.is_left() && x < scrollable.min_x() {
-                    x = trigger.max_x() + options.offset;
+                    x = trigger.max_x() + options.offset.main_axis;
                 } else if !options.placement.is_left() && x + element.width() > scrollable.max_x() {
-                    x = trigger.min_x() - element.width() - options.offset;
+                    x = trigger.min_x() - element.width() - options.offset.main_axis;
                 }
             }
         }
