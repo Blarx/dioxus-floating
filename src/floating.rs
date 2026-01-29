@@ -72,19 +72,19 @@ impl Placement {
 
     /// Returns the [PlacementModifier] (Start, Center, or End) for the current placement.
     pub fn get_modifier(&self) -> PlacementModifier {
-        match self {
-            &Placement::BottomCenter => PlacementModifier::Center,
-            &Placement::LeftCenter => PlacementModifier::Center,
-            &Placement::RightCenter => PlacementModifier::Center,
-            &Placement::TopCenter => PlacementModifier::Center,
-            &Placement::BottomEnd => PlacementModifier::End,
-            &Placement::LeftEnd => PlacementModifier::End,
-            &Placement::RightEnd => PlacementModifier::End,
-            &Placement::TopEnd => PlacementModifier::End,
-            &Placement::BottomStart => PlacementModifier::Start,
-            &Placement::LeftStart => PlacementModifier::Start,
-            &Placement::RightStart => PlacementModifier::Start,
-            &Placement::TopStart => PlacementModifier::Start,
+        match *self {
+            Placement::BottomCenter => PlacementModifier::Center,
+            Placement::LeftCenter => PlacementModifier::Center,
+            Placement::RightCenter => PlacementModifier::Center,
+            Placement::TopCenter => PlacementModifier::Center,
+            Placement::BottomEnd => PlacementModifier::End,
+            Placement::LeftEnd => PlacementModifier::End,
+            Placement::RightEnd => PlacementModifier::End,
+            Placement::TopEnd => PlacementModifier::End,
+            Placement::BottomStart => PlacementModifier::Start,
+            Placement::LeftStart => PlacementModifier::Start,
+            Placement::RightStart => PlacementModifier::Start,
+            Placement::TopStart => PlacementModifier::Start,
         }
     }
 }
@@ -385,12 +385,10 @@ impl Floating {
                 } else if !options.placement.is_top() && y + element.height() > scrollable.max_y() {
                     y = trigger.min_y() - element.height() - options.offset.cross_axis;
                 }
-            } else {
-                if options.placement.is_left() && x < scrollable.min_x() {
-                    x = trigger.max_x() + options.offset.main_axis;
-                } else if !options.placement.is_left() && x + element.width() > scrollable.max_x() {
-                    x = trigger.min_x() - element.width() - options.offset.main_axis;
-                }
+            } else if options.placement.is_left() && x < scrollable.min_x() {
+                x = trigger.max_x() + options.offset.main_axis;
+            } else if !options.placement.is_left() && x + element.width() > scrollable.max_x() {
+                x = trigger.min_x() - element.width() - options.offset.main_axis;
             }
         }
         // shift middleware

@@ -133,7 +133,7 @@ impl ScrollableContext {
     pub async fn reload(&mut self) {
         if let Some(data) = self.scrollable_ref.peek().as_ref() {
             // Мы используем логику из Floating, которую ты уже написал
-            let floating = crate::Floating::default();
+            let floating = crate::Floating;
             let new_state = floating
                 .generate_scroll_state_from_mounted(data.clone())
                 .await;
