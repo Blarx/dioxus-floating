@@ -84,5 +84,16 @@ rsx! {
 }
 ```
 
+## Examples
+The crate now includes standalone examples that mirror the real UI scenarios without depending on the workspace `ui` package:
+
+```sh
+dx serve --example dropdown --platform web
+dx serve --example context_menu --platform web
+```
+
+- `dropdown`: two FlyonUI-styled dropdowns with different trigger layouts and placements.
+- `context_menu`: a right-click menu driven by `use_placement_on_point`.
+
 ## Status
 This crate is in early development (**v0.1.0**). It was built out of necessity for a complex chat application and is currently "battle-tested" there. PRs and feedback are welcome!
