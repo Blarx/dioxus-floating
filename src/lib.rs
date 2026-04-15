@@ -1,6 +1,9 @@
 use std::rc::Rc;
 
-use dioxus::prelude::*;
+use dioxus::{
+    document::{Eval, eval},
+    prelude::*,
+};
 use dioxus::{html::geometry::ClientPoint, logger::tracing};
 
 mod floating;
@@ -44,6 +47,59 @@ pub fn use_scrollable_ref() -> Signal<Option<Rc<MountedData>>> {
     let ctx = use_scroll_context();
 
     ctx.scrollable_ref
+}
+
+/// Registers a document-level click listener and calls the handler when the click
+/// happens outside of the element with the provided id.
+///
+/// This is useful for dropdowns, popovers, and context menus that should close
+/// when focus moves away from their root element.
+pub fn use_click_outside(
+    target_element_id: ReadSignal<String>,
+    on_click_outside: EventHandler<()>,
+) {
+    let mut eval_handle = use_signal(|| Option::<Eval>::None);
+
+    use_effect(move || {
+        let element_id = target_element_id();
+
+        spawn(async move {
+            let mut eval = eval(&format!(
+                r#"
+                const elementId = "{}";
+                const controller = new AbortController();
+
+                window.addEventListener("click", (event) => {{
+                    const element = document.getElementById(elementId);
+                    if (element && !element.contains(event.target)) {{
+                        dioxus.send("outside");
+                    }}
+                }}, {{ capture: true, signal: controller.signal }});
+
+                await dioxus.recv();
+                controller.abort();
+                "#,
+                element_id
+            ));
+
+            if let Some(old_eval) = eval_handle() {
+                let _ = old_eval.send("drop");
+            }
+            eval_handle.set(Some(eval.clone()));
+
+            while let Ok(message) = eval.recv::<String>().await {
+                if message == "outside" {
+                    on_click_outside.call(());
+                }
+            }
+        });
+    });
+
+    use_drop(move || {
+        if let Some(eval) = eval_handle() {
+            let _ = eval.send("drop");
+        }
+    });
 }
 
 /// The result of a floating position calculation.
