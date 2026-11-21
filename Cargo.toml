@@ -1,18 +1,23 @@
 [package]
-name = "dioxus-floating"
-version = "0.3.2"
-edition = "2024"
 authors = ["Alexandr <flatbusy@gmail.com>"]
-description = "A floating positioning engine for Dioxus 0.7. Handles flips, shifts, and scrollable containers with ease."
-repository = "https://github.com/Blarx/dioxus-floating"
-license = "MIT OR Apache-2.0"
-keywords = ["dioxus", "ui", "floating", "dropdown", "context-menu"]
 categories = ["gui", "web-programming"]
+description = "A floating positioning engine for Dioxus 0.7. Handles flips, shifts, and scrollable containers with ease."
+edition = "2024"
+keywords = ["context-menu", "dioxus", "dropdown", "floating", "ui"]
+license = "MIT OR Apache-2.0"
+name = "dioxus-floating"
 readme = "README.md"
+repository = "https://github.com/Blarx/dioxus-floating"
+version = "0.3.2"
 
 [dependencies]
 dioxus = { version = "0.7" }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
 gloo-timers = { version = "0.3", features = ["futures"] }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+tokio = { version = "1", features = ["time"] }
 
 [[example]]
 name = "dropdown"
