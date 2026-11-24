@@ -4,7 +4,7 @@ Add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-dioxus-floating = "0.3.2"
+dioxus-floating = "0.3.3"
 ```
 
 # dioxus-floating

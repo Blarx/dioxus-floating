@@ -4,6 +4,8 @@ Notable changes to `dioxus-floating` are documented here, newest first.
 
 ## [Unreleased]
 
+## [0.3.3] — 2026-11-24
+
 ### Added
 
 - Middleware playground comparing `Flip` and `Shift` in vertical and horizontal
@@ -77,7 +79,8 @@ Notable changes to `dioxus-floating` are documented here, newest first.
 - Initial release for Dioxus 0.7 with element- and point-based placement,
   `ScrollableView`, and `Flip` and `Shift` middleware.
 
-[Unreleased]: https://github.com/Blarx/dioxus-floating/compare/v0.3.2...main
+[Unreleased]: https://github.com/Blarx/dioxus-floating/compare/v0.3.3...main
+[0.3.3]: https://github.com/Blarx/dioxus-floating/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/Blarx/dioxus-floating/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/Blarx/dioxus-floating/compare/v0.2.1...v0.3.1
 [0.2.1]: https://github.com/Blarx/dioxus-floating/compare/v0.1.2...v0.2.1
