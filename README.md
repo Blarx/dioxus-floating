@@ -96,4 +96,6 @@ dx serve --example context_menu --platform web
 - `context_menu`: a right-click menu driven by `use_placement_on_point`.
 
 ## Status
-This crate is in early development (**v0.1.0**). It was built out of necessity for a complex chat application and is currently "battle-tested" there. PRs and feedback are welcome!
+This crate is in early development. It was built out of necessity for a complex chat application and is currently "battle-tested" there. PRs and feedback are welcome!
+
+See the [changelog](./CHANGELOG.md) for version history and compatibility notes.
