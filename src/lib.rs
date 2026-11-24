@@ -1,3 +1,8 @@
+//! Position floating elements relative to DOM elements or pointer coordinates.
+//!
+//! Wrap the relevant UI in [`ScrollableView`] and use [`use_placement`] or
+//! [`use_placement_on_point`] to track its viewport-relative position.
+
 use std::rc::Rc;
 
 use dioxus::{
@@ -85,7 +90,7 @@ pub fn use_click_outside(
             if let Some(old_eval) = eval_handle() {
                 let _ = old_eval.send("drop");
             }
-            eval_handle.set(Some(eval.clone()));
+            eval_handle.set(Some(eval));
 
             while let Ok(message) = eval.recv::<String>().await {
                 if message == "outside" {
@@ -109,11 +114,11 @@ pub fn use_click_outside(
 /// custom CSS styles.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct FloatingResult {
-    // Calculated X coordinate (viewport-relative pixels).
+    /// Calculated X coordinate in viewport-relative pixels.
     pub x: f64,
-    // Calculated Y coordinate (viewport-relative pixels).
+    /// Calculated Y coordinate in viewport-relative pixels.
     pub y: f64,
-    // Use this to toggle visibility (e.g., opacity) to prevent flickering.
+    /// Indicates that the positioning hook has calculated coordinates.
     pub is_ready: bool,
 }
 

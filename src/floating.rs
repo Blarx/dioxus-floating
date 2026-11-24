@@ -26,17 +26,29 @@ pub struct ScrollState {
 /// Defines the preferred side and alignment of the floating element relative to its trigger.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Placement {
+    /// Above the anchor, aligned to its left edge.
     TopStart,
+    /// Above the anchor, centered horizontally.
     TopCenter,
+    /// Above the anchor, aligned to its right edge.
     TopEnd,
+    /// Below the anchor, aligned to its left edge.
     BottomStart,
+    /// Below the anchor, centered horizontally.
     BottomCenter,
+    /// Below the anchor, aligned to its right edge.
     BottomEnd,
+    /// Left of the anchor, aligned to its top edge.
     LeftStart,
+    /// Left of the anchor, centered vertically.
     LeftCenter,
+    /// Left of the anchor, aligned to its bottom edge.
     LeftEnd,
+    /// Right of the anchor, aligned to its top edge.
     RightStart,
+    /// Right of the anchor, centered vertically.
     RightCenter,
+    /// Right of the anchor, aligned to its bottom edge.
     RightEnd,
 }
 
@@ -70,7 +82,7 @@ impl Placement {
         )
     }
 
-    /// Returns the [PlacementModifier] (Start, Center, or End) for the current placement.
+    /// Returns the alignment (`Start`, `Center`, or `End`) for the current placement.
     pub fn get_modifier(&self) -> PlacementModifier {
         match *self {
             Placement::BottomCenter => PlacementModifier::Center,
@@ -187,7 +199,7 @@ impl Default for FloatingOptions {
 impl Floating {
     /// Asynchronously captures the initial [ScrollState] from a mounted element.
     ///
-    /// This method is usually called once when the [ScrollableView] is first mounted
+    /// Usually called once when the [`ScrollableView`](crate::ScrollableView) is first mounted
     /// or when its underlying DOM element changes. It performs multiple async
     /// JS calls to measure the layout.
     ///

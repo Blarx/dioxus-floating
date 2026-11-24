@@ -85,13 +85,18 @@ rsx! {
 ```
 
 ## Examples
-The crate now includes standalone examples that mirror the real UI scenarios without depending on the workspace `ui` package:
+
+Open the [live examples on GitHub Pages](https://blarx.github.io/dioxus-floating/)
+or run one locally with the Dioxus CLI:
 
 ```sh
-dx serve --example dropdown --platform web
-dx serve --example context_menu --platform web
+dx serve --web --example middleware
+dx serve --web --example dropdown
+dx serve --web --example context_menu
 ```
 
+- `middleware`: compare no middleware, `Flip`, `Shift`, and both together in
+  independent vertical and horizontal `ScrollableView` containers.
 - `dropdown`: two FlyonUI-styled dropdowns with different trigger layouts and placements.
 - `context_menu`: a right-click menu driven by `use_placement_on_point`.
 

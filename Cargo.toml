@@ -3,6 +3,7 @@ authors = ["Alexandr <flatbusy@gmail.com>"]
 categories = ["gui", "web-programming"]
 description = "A floating positioning engine for Dioxus 0.7. Handles flips, shifts, and scrollable containers with ease."
 edition = "2024"
+homepage = "https://blarx.github.io/dioxus-floating/"
 keywords = ["context-menu", "dioxus", "dropdown", "floating", "ui"]
 license = "MIT OR Apache-2.0"
 name = "dioxus-floating"
@@ -26,3 +27,7 @@ path = "examples/dropdown.rs"
 [[example]]
 name = "context_menu"
 path = "examples/context_menu.rs"
+
+[[example]]
+name = "middleware"
+path = "examples/middleware.rs"

@@ -4,6 +4,12 @@ Notable changes to `dioxus-floating` are documented here, newest first.
 
 ## [Unreleased]
 
+### Added
+
+- Middleware playground comparing `Flip` and `Shift` in vertical and horizontal
+  scroll boxes. The examples are built for WebAssembly in CI and deployed to
+  [GitHub Pages](https://blarx.github.io/dioxus-floating/) from `main`.
+
 ### Fixed
 
 - Avoid a panic in `use_placement` and `use_placement_on_point` on native targets

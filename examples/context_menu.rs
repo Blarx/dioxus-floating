@@ -102,13 +102,7 @@ fn ContextTarget() -> Element {
             pos.x, pos.y,
         ))
     });
-    let open_class = use_memo(move || {
-        if position().is_ready {
-            "open"
-        } else {
-            ""
-        }
-    });
+    let open_class = use_memo(move || if position().is_ready { "open" } else { "" });
     let menu_visibility_class = use_memo(move || {
         if position().is_ready {
             "opacity-100"
@@ -220,7 +214,7 @@ fn TailwindLayoutListener() -> Element {
             if let Some(old_eval) = eval_handle() {
                 let _ = old_eval.send("drop");
             }
-            eval_handle.set(Some(eval.clone()));
+            eval_handle.set(Some(eval));
 
             while eval.recv::<String>().await.is_ok() {
                 scroll_context.reload().await;
