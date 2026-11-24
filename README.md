@@ -104,3 +104,8 @@ dx serve --web --example context_menu
 This crate is in early development. It was built out of necessity for a complex chat application and is currently "battle-tested" there. PRs and feedback are welcome!
 
 See the [changelog](./CHANGELOG.md) for version history and compatibility notes.
+
+## License
+
+This library is dual-licensed under the [MIT license](./LICENSE-MIT) or the
+[Apache License, Version 2.0](./LICENSE-APACHE), at your option.

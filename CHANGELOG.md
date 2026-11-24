@@ -10,6 +10,10 @@ Notable changes to `dioxus-floating` are documented here, newest first.
   scroll boxes. The examples are built for WebAssembly in CI and deployed to
   [GitHub Pages](https://blarx.github.io/dioxus-floating/) from `main`.
 
+### Changed
+
+- Include both license texts for the declared `MIT OR Apache-2.0` licensing.
+
 ### Fixed
 
 - Avoid a panic in `use_placement` and `use_placement_on_point` on native targets
