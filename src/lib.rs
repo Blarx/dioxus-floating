@@ -229,7 +229,7 @@ where
             let options = options.clone();
             spawn(async move {
                 // wait render virtual dom elements
-                gloo_timers::future::TimeoutFuture::new(1).await;
+                wait_async(1).await;
 
                 let pos = floating
                     .placement_on_trigger(scroll_state, scrollable, element, trigger, options)
@@ -369,7 +369,7 @@ where
             let options = options.clone();
             spawn(async move {
                 // wait render virtual dom elements
-                gloo_timers::future::TimeoutFuture::new(1).await;
+                wait_async(1).await;
 
                 let pos = floating
                     .placement_on_point(scroll_state, scrollable, element, trigger, options)
@@ -397,4 +397,12 @@ where
     });
 
     result.into()
+}
+
+async fn wait_async(delay: u32) {
+    #[cfg(target_arch = "wasm32")]
+    gloo_timers::future::TimeoutFuture::new(delay).await;
+
+    #[cfg(not(target_arch = "wasm32"))]
+    tokio::time::sleep(std::time::Duration::from_millis(u64::from(delay))).await;
 }
