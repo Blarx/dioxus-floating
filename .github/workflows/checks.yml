@@ -1,0 +1,111 @@
+name: Shared checks
+
+on:
+  workflow_call:
+    inputs:
+      upload-pages:
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  DIOXUS_CLI_VERSION: "0.7.10"
+
+jobs:
+  rust:
+    name: Rust, docs and package
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Install Go for workflow linting
+        uses: actions/setup-go@v6
+        with:
+          go-version: stable
+          cache: false
+
+      - name: Lint workflows
+        run: |
+          go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.12
+          actionlint -color
+
+      - name: Resolve dependencies
+        run: cargo generate-lockfile
+
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: native
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+
+      - name: Run Clippy
+        run: cargo clippy --locked --all-targets -- -D warnings
+
+      - name: Run tests and documentation examples
+        run: |
+          cargo test --locked --all-targets
+          cargo test --locked --doc
+
+      - name: Build strict rustdoc
+        env:
+          RUSTDOCFLAGS: -D warnings -D missing_docs
+        run: cargo doc --locked --no-deps
+
+      - name: Verify crate package
+        run: cargo package --locked
+
+      - name: Save checked dependency resolution
+        uses: actions/upload-artifact@v7
+        with:
+          name: checked-cargo-lock
+          path: Cargo.lock
+          if-no-files-found: error
+          retention-days: 7
+
+  web:
+    name: Web examples
+    needs: rust
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install Rust and WebAssembly target
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Restore checked dependency resolution
+        uses: actions/download-artifact@v8
+        with:
+          name: checked-cargo-lock
+
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: web
+
+      - name: Install Dioxus CLI
+        uses: taiki-e/install-action@v2
+        with:
+          tool: dioxus-cli@${{ env.DIOXUS_CLI_VERSION }}
+
+      - name: Build all Web examples
+        run: bash .github/pages/build.sh "$RUNNER_TEMP/dioxus-pages" "/${GITHUB_REPOSITORY#*/}"
+
+      - name: Upload GitHub Pages artifact
+        if: inputs.upload-pages
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: ${{ runner.temp }}/dioxus-pages

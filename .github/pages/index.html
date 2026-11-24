@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>dioxus-floating examples</title>
+  <style>
+    :root { color-scheme: dark; font: 1rem/1.55 system-ui, sans-serif; background: #101426; color: #eef2ff; }
+    body { max-width: 43rem; margin: clamp(2rem, 11vh, 7rem) auto; padding: 0 1.25rem; }
+    h1 { margin: 0 0 .5rem; font-size: clamp(2rem, 7vw, 4rem); line-height: 1.08; letter-spacing: -.05em; }
+    a { color: #c6c6ff; text-underline-offset: .24em; }
+    a:focus-visible { outline: 2px solid #b9f5d7; outline-offset: 4px; }
+    p { color: #bdc7e2; margin-top: .25rem; }
+    ul { margin: 2rem 0; padding: 0; list-style: none; display: grid; gap: .7rem; }
+    li { padding: .9rem 1.1rem; border: 1px solid #37405a; border-radius: .85rem; background: #1b2238; }
+    li a { font-size: 1.13rem; font-weight: 700; }
+    li p { margin-bottom: 0; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>dioxus-floating examples</h1>
+    <p>Explore floating placement and scroll-aware menus in Dioxus.</p>
+    <ul role="list">
+      <li><a href="middleware/">Middleware playground</a><p>Compare Flip and Shift in vertical and horizontal scroll boxes.</p></li>
+      <li><a href="dropdown/">Dropdowns</a><p>Anchor menus to buttons with different placements.</p></li>
+      <li><a href="context_menu/">Context menu</a><p>Open a menu at the pointer with a right click.</p></li>
+    </ul>
+    <a href="https://github.com/Blarx/dioxus-floating/tree/main/examples">Example source on GitHub</a>
+  </main>
+</body>
+</html>

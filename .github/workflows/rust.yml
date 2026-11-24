@@ -2,29 +2,36 @@ name: Rust CI
 
 on:
   push:
-    branches: ["main"]
+    branches: [main]
   pull_request:
-    branches: ["main"]
+    branches: [main]
+  workflow_dispatch:
 
-env:
-  CARGO_TERM_COLOR: always
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  check:
-    name: Check & Test
+  checks:
+    uses: ./.github/workflows/checks.yml
+    with:
+      upload-pages: ${{ github.ref == 'refs/heads/main' && !github.event.repository.fork }}
+
+  deploy-pages:
+    name: Deploy examples to GitHub Pages
+    if: github.ref == 'refs/heads/main' && !github.event.repository.fork
+    needs: checks
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Rust Cache
-        uses: Swatinem/rust-cache@v2
-
-      - name: Cargo Check
-        run: cargo check --all-targets
-
-      - name: Run Doc Tests
-        # Проверяем примеры, которые мы написали в документации ///
-        run: cargo test --doc
+      - name: Deploy GitHub Pages artifact
+        id: deployment
+        uses: actions/deploy-pages@v5
