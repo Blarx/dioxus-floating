@@ -399,10 +399,10 @@ where
     result.into()
 }
 
-async fn wait_async(delay: u64) {
+async fn wait_async(delay: u32) {
     #[cfg(target_arch = "wasm32")]
     gloo_timers::future::TimeoutFuture::new(delay).await;
 
     #[cfg(not(target_arch = "wasm32"))]
-    tokio::time::sleep(std::time::Duration::from_millis(delay)).await;
+    tokio::time::sleep(std::time::Duration::from_millis(u64::from(delay))).await;
 }
